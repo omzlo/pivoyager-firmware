@@ -1,0 +1,96 @@
+# name of executable
+
+ELF=$(notdir $(CURDIR)).elf                    
+
+BIN=$(notdir $(CURDIR)).bin
+
+# Tool path
+
+# TOOLROOT=/l/arm/arm-none-eabi/bin
+
+# Library path
+
+LIBROOT=$(HOME)/Src/STM32F0xx_StdPeriph_Lib_V1.5.0/Libraries
+
+# Tools
+
+# CC=$(TOOLROOT)/arm-none-eabi-gcc
+# LD=$(TOOLROOT)/arm-none-eabi-gcc
+# AR=$(TOOLROOT)/arm-none-eabi-ar
+# AS=$(TOOLROOT)/arm-none-eabi-as
+
+CC=arm-none-eabi-gcc
+LD=arm-none-eabi-gcc
+AR=arm-none-eabi-ar
+AS=arm-none-eabi-as
+OBJCOPY=arm-none-eabi-objcopy
+
+# Code Paths
+
+CORE=$(LIBROOT)/CMSIS
+DEVICE=$(LIBROOT)/CMSIS/Device/ST/STM32F0xx
+PERIPH=$(LIBROOT)/STM32F0xx_StdPeriph_Driver
+
+# Search path for standard files
+
+vpath %.c $(TEMPLATEROOT)
+
+# Search path for perpheral library
+
+vpath %.c $(DEVICE)/Source/Templates
+vpath %.c $(PERIPH)/src
+vpath %.c $(DEVICE)
+
+#  Processor specific
+
+#PTYPE = STM32F0XX_MD
+PTYPE = STM32F042
+LDSCRIPT = $(TEMPLATEROOT)/stm32f0xx.ld
+#STARTUP=  startup_stm32f0xx.o system_stm32f0xx.o 
+STARTUP=  startup_stm32f0xx.o
+
+# Compilation Flags
+
+FULLASSERT = -DUSE_FULL_ASSERT 
+
+LDFLAGS+= -T$(LDSCRIPT) -mthumb -mcpu=cortex-m0
+CFLAGS+= -mcpu=cortex-m0 -mthumb 
+CFLAGS+= -I$(TEMPLATEROOT) -I. -I$(CORE)/Include -I$(DEVICE)/Include -I$(CORE) -I$(PERIPH)/inc
+CFLAGS+= -DUSE_STDPERIPH_DRIVER $(FULLASSERT) -D$(PTYPE) 
+
+# Build executable 
+
+$(ELF):	$(OBJS)
+	$(LD) $(LDFLAGS) -o $@ $(OBJS) $(LDLIBS)
+
+$(BIN):	$(ELF)
+	$(OBJCOPY) -O binary $< $@
+
+# compile and generate dependency info
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) $< -o $@
+	$(CC) -MM $(CFLAGS) $< > $*.d
+
+%.o: %.s
+	$(AS) $< -o $@
+
+clean:
+	rm -f $(OBJS) $(OBJS:.o=.d) $(ELF) startup_stm32f* $(CLEANOTHER)
+
+bin:	$(BIN)
+
+debug:	$(ELF)
+	arm-none-eabi-gdb -iex "target extended-remote localhost:4242" $(ELF)
+
+
+flash:	$(BIN)
+	st-flash write $(BIN) 0x8000000
+
+# pull in dependencies
+
+-include $(OBJS:.o=.d)
+
+
+
+
