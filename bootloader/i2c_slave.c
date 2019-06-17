@@ -8,7 +8,6 @@
  */
 
 uint8_t *i2c_buf;
-const uint8_t *i2c_mask;
 uint8_t i2c_buf_len;
 volatile uint32_t i2c_buf_rx_count;
 volatile uint32_t i2c_buf_tx_count;
@@ -65,7 +64,7 @@ void i2c_slave_init(uint8_t i2c_addr)
     I2C1->CR1 |= I2C_CR1_PE; // I2C enable
 
 
-    i2c_set_buffer(0, 0, 0);
+    i2c_set_buffer(0, 0);
 
     i2c_reg = 0;
     i2c_op = I2C_OP_ADDR;
@@ -74,10 +73,9 @@ void i2c_slave_init(uint8_t i2c_addr)
     NVIC_EnableIRQ(I2C1_IRQn);      // Enable IRQ
 }
 
-void i2c_set_buffer(uint8_t *buf, const uint8_t *mask, uint32_t len)
+void i2c_set_buffer(uint8_t *buf, uint32_t len)
 {
     i2c_buf = buf;
-    i2c_mask = mask;
     i2c_buf_len = len;
 }
 
@@ -120,9 +118,8 @@ void I2C1_IRQHandler(void)
         }
         else
         {
-            if (i2c_reg<i2c_buf_len) {
-                i2c_buf[i2c_reg] &= ~i2c_mask[i2c_reg];
-                i2c_buf[i2c_reg] |= (I2C1->RXDR)&i2c_mask[i2c_reg];
+            if (i2c_reg<i2c_buf_len && i2c_reg>0) {
+                i2c_buf[i2c_reg] = I2C1->RXDR;
                 i2c_reg++;
             } else {
                 dummy = I2C1->RXDR;

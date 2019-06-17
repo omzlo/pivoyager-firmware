@@ -26,7 +26,7 @@ time_t rtc_get_time(void);
 void rtc_set_date(date_t dt);
 date_t rtc_get_date(void);
 
-void rtc_enable_calendar_init(void);
+int rtc_enable_calendar_init(void);
 
 void rtc_disable_calendar_init(void);
 
@@ -35,5 +35,9 @@ void rtc_set_alarm(uint32_t alarm);
 void rtc_enable_alarm(void);
 
 void rtc_disable_alarm(void);
+
+uint32_t rtc_read_backup_register(uint32_t addr);
+
+void rtc_write_backup_register(uint32_t addr, uint32_t value);
 
 #endif

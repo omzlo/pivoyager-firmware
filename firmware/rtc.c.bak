@@ -176,9 +176,7 @@ int rtc_init(void)
       RTC->CR &= ~RTC_CR_ALRAIE;
       rtc_enable_write_protection();
       // Clear Standby flag and Clear wakeup flag
-      PWR->CR |= (PWR_CR_CSBF | PWR_CR_CWUF);
-      // Clear any Alarm interrupt
-      RTC->ISR &= ~RTC_ISR_ALRAF;
+      PWR->CR = (PWR_CR_CSBF | PWR_CR_CWUF);
     }
     return 0;
 }

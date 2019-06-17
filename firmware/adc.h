@@ -8,5 +8,6 @@ void adc_init(void);
 
 void adc_acquire(uint16_t *result);
 
+#define VREFINT_CAL (*((uint16_t *)(0x1FFFF7BA)))
 
 #endif

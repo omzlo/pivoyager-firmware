@@ -1,11 +1,13 @@
-# CANZERO core driver for STM32F042
+# PiVoyager firmware 
 
 This repository contains all the source code for the STM32F0xx ARM Cortex
-MCU on the PiVoyager, the best UPS for the Raspberry Pi.
+MCU on the PiVoyager, the best UPS for the Raspberry Pi!
 
 ## Directories
 
 `firmware` contains the code for the STM32F0 UPS driver.
+
+`bootloader` contains the code for the I2C STM32F0 bootloader.
 
 ## Compiling
 

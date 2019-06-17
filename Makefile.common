@@ -23,6 +23,7 @@ CC=arm-none-eabi-gcc
 LD=arm-none-eabi-gcc
 AR=arm-none-eabi-ar
 AS=arm-none-eabi-as
+SIZE=arm-none-eabi-size
 OBJCOPY=arm-none-eabi-objcopy
 
 # Code Paths
@@ -44,8 +45,8 @@ vpath %.c $(DEVICE)
 #  Processor specific
 
 #PTYPE = STM32F0XX_MD
-PTYPE = STM32F042
-LDSCRIPT = $(TEMPLATEROOT)/stm32f0xx.ld
+PTYPE = STM32F030
+LDSCRIPT = $(TEMPLATEROOT)/stm32f0xx-$(notdir $(CURDIR)).ld
 #STARTUP=  startup_stm32f0xx.o system_stm32f0xx.o 
 STARTUP=  startup_stm32f0xx.o
 
@@ -54,9 +55,9 @@ STARTUP=  startup_stm32f0xx.o
 FULLASSERT = -DUSE_FULL_ASSERT 
 
 LDFLAGS+= -T$(LDSCRIPT) -mthumb -mcpu=cortex-m0
-CFLAGS+= -mcpu=cortex-m0 -mthumb 
+CFLAGS+= -mcpu=cortex-m0 -mthumb
 CFLAGS+= -I$(TEMPLATEROOT) -I. -I$(CORE)/Include -I$(DEVICE)/Include -I$(CORE) -I$(PERIPH)/inc
-CFLAGS+= -DUSE_STDPERIPH_DRIVER $(FULLASSERT) -D$(PTYPE) 
+CFLAGS+= -DUSE_STDPERIPH_DRIVER $(FULLASSERT) -D$(PTYPE)  
 
 # Build executable 
 
@@ -83,6 +84,8 @@ bin:	$(BIN)
 debug:	$(ELF)
 	arm-none-eabi-gdb -iex "target extended-remote localhost:4242" $(ELF)
 
+size:	$(ELF)
+	$(SIZE) $<
 
 flash:	$(BIN)
 	st-flash write $(BIN) 0x8000000

@@ -3,7 +3,7 @@
 
 void i2c_slave_init(uint8_t i2c_addr);
 
-void i2c_set_buffer(uint8_t *buf, const uint8_t *mask, uint32_t len);
+void i2c_set_buffer(uint8_t *buf, uint32_t len);
 
 uint32_t i2c_tx_count(void);
 
