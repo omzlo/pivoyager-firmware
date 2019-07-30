@@ -90,10 +90,12 @@ int main(void)
     flash_start_main_application();
   }
 
-  gpio_enable_port_clock(PORTB);
+  gpio_enable_port_clock(PORTA);
+  gpio_enable_output(GPIO_OUT_EN);
   gpio_enable_output(GPIO_OUT_LED_PG);
   gpio_enable_output(GPIO_OUT_LED_CH);
   gpio_enable_output(GPIO_OUT_LED_ST);
+  gpio_set(GPIO_OUT_EN);
 
   systick_init();
 

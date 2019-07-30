@@ -7,6 +7,8 @@
 #include "rtc.h"
 #include "time_conv.h"
 
+#define PIVOYAGER_FIRMWARE_VERSION 0x0010
+
 typedef struct {
     // 0
     uint8_t MODE;   // either 'N' or 'B'
@@ -29,7 +31,7 @@ typedef struct {
     // 24
     uint32_t ALARM;
     uint16_t BOOT;
-    uint16_t res1;
+    uint16_t FW_VERSION;
 
     // 32
     uint16_t VBAT;
@@ -45,23 +47,23 @@ static regs_t REGS;
 static uint8_t SHADOW_CONF = 0;
 
 static const regs_t REGS_MASK = {
-  .MODE     = 0x00,
-  .STAT     = 0x00,
-  .CONF     = 0xFF,
-  .PROG     = 0xFF,
-  .TIME     = 0x00000000,
-  .DATE     = 0x00000000,
-  .SET_TIME = 0xFFFFFFFF,
-  .SET_DATE = 0xFFFFFFFF,
-  .WATCH    = 0xFFFF,
-  .WAKE     = 0xFFFF,
-  .ALARM    = 0xFFFFFFFF,
-  .BOOT     = 0x0000,
-  .res1     = 0xFFFF,
-  .VBAT     = 0x0000,
-  .VREF     = 0x0000,
-  .VREF_CAL = 0xFFFF,
-  .LBO_TIMER = 0xFFFF
+  .MODE       = 0x00,
+  .STAT       = 0x00,
+  .CONF       = 0xFF,
+  .PROG       = 0xFF,
+  .TIME       = 0x00000000,
+  .DATE       = 0x00000000,
+  .SET_TIME   = 0xFFFFFFFF,
+  .SET_DATE   = 0xFFFFFFFF,
+  .WATCH      = 0xFFFF,
+  .WAKE       = 0xFFFF,
+  .ALARM      = 0xFFFFFFFF,
+  .BOOT       = 0x0000,
+  .FW_VERSION = 0x0000,
+  .VBAT       = 0x0000,
+  .VREF       = 0x0000,
+  .VREF_CAL   = 0xFFFF,
+  .LBO_TIMER  = 0xFFFF
 };
 
 #define STAT_PG         0x01
@@ -310,6 +312,9 @@ static void init(void)
     for (int i=0; i<10;i++)
       usart_printf("%s\n",screen[i]);
 
+    /* Firmware version */
+    usart_printf("Firmware version: %x.%x\n", REGS.FW_VERSION>>8, REGS.FW_VERSION&0xFF);
+
     /* PWR CSR */
     usart_printf("PWR_CSR: 0x%x\n", pwr_csr);
 
@@ -384,6 +389,7 @@ static void init(void)
     REGS.CONF = SHADOW_CONF = (CONF_WAKE_BUTTON | CONF_LBO_SHUTDOWN);
     REGS.BOOT = pwr_csr;
     REGS.LBO_TIMER = 60;
+    REGS.FW_VERSION = PIVOYAGER_FIRMWARE_VERSION;
 
     usart_printf("Init done. Entering main loop.\n");
 }
