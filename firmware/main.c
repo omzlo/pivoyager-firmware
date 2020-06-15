@@ -424,11 +424,20 @@ static void go_to_standby_mode(void)
     PWR->CSR |= PWR_CSR_EWUP2;
     usart_printf("Wake on button enabled (button=%i)\n",gpio_read(GPIO_IN_BUTTON));
   }
+  else
+  {
+    PWR->CSR &= ~PWR_CSR_EWUP2;
+  }
 
   /* Wake on power good? */
   if ((SHADOW_CONF & CONF_WAKE_POWER)!=0 && !gpio_read(GPIO_IN_PG))
   {
     PWR->CSR |= PWR_CSR_EWUP1;
+    usart_printf("Wake on power good enabled (pg=%i)\n",gpio_read(GPIO_IN_PG));
+  }
+  else
+  {
+    PWR->CSR &= ~PWR_CSR_EWUP1;
   }
 
   /* Wake on timer? */
