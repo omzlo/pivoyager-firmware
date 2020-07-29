@@ -1,8 +1,13 @@
 #!/bin/bash
 
 cd bootloader
-make flash
+if ! make flash; then
+    exit 1
+fi
 cd ..
 cd firmware
-make flash
+if ! make flash; then
+    exit 1
+fi
 cd ..
+
