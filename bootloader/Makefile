@@ -2,7 +2,7 @@ TEMPLATEROOT = ..
 
 # compilation flags for gdb
 
-CFLAGS+= -Os -Wall -nostdlib -fdata-sections -ffunction-sections 
+CFLAGS+= -g -Os -Wall -nostdlib -fdata-sections -ffunction-sections 
 LDFLAGS+= -Wl,--gc-sections --specs=nano.specs --specs=nosys.specs
 ASFLAGS= 
 

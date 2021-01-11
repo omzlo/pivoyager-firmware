@@ -1,6 +1,6 @@
 ENTRY(Reset_Handler)
 
-/* End of 6Kb SRAM */
+/* End of 4Kb SRAM */
 _estack = 0x20001000;
 
 /* Generate a link error if heap and stack don't fit into RAM */
@@ -12,7 +12,7 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 
 MEMORY
 {
-  FLASH (rx)      : ORIGIN = 0x08000000 + 0x2000, LENGTH = 32K - 0x2000
+  FLASH (rx)      : ORIGIN = 0x08000000 + 0x1000, LENGTH = 16K - 0x1000
   RAM (xrw)       : ORIGIN = 0x20000000 + 0xC0,   LENGTH = 4K - 0xC0
   MEMORY_B1 (rx)  : ORIGIN = 0x60000000,          LENGTH = 0K
 }

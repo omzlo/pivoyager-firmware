@@ -3,14 +3,28 @@
 
 #include <stdint.h>
 
-// 1K page size
-#define FLASH_PAGE_SIZE ((uint32_t)0x00000400)
 
-// 8K
-#define FLASH_APP_START ((uint32_t)0x08002000)
+#ifdef STM32F030
+    // 1K page size
+    #define FLASH_PAGE_SIZE ((uint32_t)0x00000400)
 
-// Assuming 32K flash (0x8000)
-#define FLASH_APP_END ((uint32_t)(0x08008000-1))
+    // 8K
+    #define FLASH_APP_START ((uint32_t)0x08002000)
+
+    // Assuming 32K flash (0x8000)
+    #define FLASH_APP_END ((uint32_t)(0x08008000-1))
+#else
+    #warning "Using generic STM32F0xx memroy configuration"
+    // 1K page size
+    #define FLASH_PAGE_SIZE ((uint32_t)0x00000400)
+
+    // 4K
+    #define FLASH_APP_START ((uint32_t)0x08001000)
+
+    // Assuming 16K flash (0x4000)
+    #define FLASH_APP_END ((uint32_t)(0x080084000-1))
+#endif
+
 
 void flash_open(void);
 

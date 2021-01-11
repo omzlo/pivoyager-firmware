@@ -17,4 +17,4 @@ include $(TEMPLATEROOT)/Makefile.common
 
 # Override default for flash 
 flash:	$(BIN)
-				st-flash write $(BIN) 0x8002000
+				st-flash write $(BIN) 0x8001000
